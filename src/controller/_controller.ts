@@ -2,9 +2,9 @@ import { type Request, type Response } from "express";
 
 
 export const index = (req: Request, res: Response) => {
-    res.render("index");
+    res.send("Home");
 }
 
 export const _404 = (req: Request, res: Response) => {
-    res.render("404");
+    res.send("404");
 }

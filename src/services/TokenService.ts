@@ -9,7 +9,7 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_KEY as string;
 if (!JWT_SECRET) throw new Error("JWT_KEY not set in .env");
 
-type UserDocument = Document<unknown, {}, IUser> & IUser & { _id: Types.ObjectId };
+export type UserDocument = Document<unknown, {}, IUser> & IUser & { _id: Types.ObjectId };
 
 export class TokenService {
     static setToken(payload: object, expiresIn: number) {
@@ -38,9 +38,13 @@ export class TokenService {
         }
     }
 
-    static async verifyUser(token: string | undefined, checkAdmin = false): Promise<UserDocument | 401 | 400 | null> {
+    private static sendStatusCode(code: number) {
+        return { err: "Error", statusCode: code };
+    }
+
+    static async verifyUser(token: string | undefined, checkAdmin = false): Promise<UserDocument | 401 | 403> {
         if (!token?.startsWith("Bearer ") || !token?.split(" ")[1]) {
-            return 400;
+            return 401;
         }
         token = token.split(" ")[1] as string;
         const decodedToken = this.decodeToken(token, checkAdmin);
@@ -50,7 +54,13 @@ export class TokenService {
         try {
             const user = await User.findById(decodedToken._id);
             if (!user) return 401;
+
+            if (checkAdmin) {
+                if (user.role !== "admin") return 403;
+            }
+
             return user;
+
         } catch (err) {
             return 401;
         }

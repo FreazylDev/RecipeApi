@@ -6,5 +6,5 @@ export const test = (req: Request, res: Response) => {
 }
 
 export const _404 = (req: Request, res: Response) => {
-    res.status(501).json({ msg: "Not a valid API endpoint" });
+    res.status(404).json({ msg: "Not a valid API endpoint" });
 }

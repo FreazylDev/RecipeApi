@@ -8,7 +8,6 @@ import { verifyRefreshToken } from "../middleware/verifyUser.js";
 
 apiRouter.get("/test", apiController.test);
 
-apiRouter.post("/auth/signup", authController.signup);
 apiRouter.post("/auth/login", authController.login);
 
 apiRouter.post("/recipe/add", verifyRefreshToken, recipeController.addRecipe);
